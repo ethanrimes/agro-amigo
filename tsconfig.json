@@ -1,0 +1,23 @@
+{
+  "extends": "expo/tsconfig.base",
+  "target": "ESNext",
+  "module": "ESNext",  // Ensure you use ESM
+  "moduleResolution": "node",
+  "esModuleInterop": true,  // Allows default imports from CommonJS modules
+  "allowSyntheticDefaultImports": true,
+  "skipLibCheck": true,
+  "compilerOptions": {
+    "strict": true,
+    "paths": {
+      "@/*": [
+        "./*"
+      ]
+    }
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    ".expo/types/**/*.ts",
+    "expo-env.d.ts"
+  ]
+}

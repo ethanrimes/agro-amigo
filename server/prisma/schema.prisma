@@ -1,0 +1,134 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "mysql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Departamento {
+  idDivipola Int         @id @default(autoincrement())
+  nombre     String
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  mercados   Mercado[]
+  municipios Municipio[]
+
+  @@index([nombre])
+}
+
+model Municipio {
+  nombre         String
+  idDivipola     Int          @id @default(autoincrement())
+  departamentoId Int
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  mercados       Mercado[]
+  departamento   Departamento @relation(fields: [departamentoId], references: [idDivipola])
+
+  @@index([idDivipola])
+  @@index([nombre])
+  @@index([departamentoId], map: "Municipio_departamentoId_fkey")
+}
+
+model Mercado {
+  nombre              String
+  fuenId              Int                       @id @default(autoincrement())
+  futId               Int
+  municipioId         Int
+  departamentoId      Int
+  createdAt           DateTime                  @default(now())
+  updatedAt           DateTime                  @updatedAt
+  departamento        Departamento              @relation(fields: [departamentoId], references: [idDivipola])
+  municipio           Municipio                 @relation(fields: [municipioId], references: [idDivipola])
+  monthlyObservations MonthlyPriceObservation[]
+  weeklyObservations  WeeklyPriceObservation[]
+
+  @@index([fuenId])
+  @@index([nombre])
+  @@index([departamentoId], map: "Mercado_departamentoId_fkey")
+  @@index([municipioId], map: "Mercado_municipioId_fkey")
+}
+
+model MajorCategory {
+  id            Int           @id @default(autoincrement())
+  name          String
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  productos     Producto[]
+  subcategories SubCategory[]
+
+  @@index([name])
+}
+
+model SubCategory {
+  id              Int           @id @default(autoincrement())
+  name            String
+  majorCategoryId Int
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  productos       Producto[]
+  majorCategory   MajorCategory @relation(fields: [majorCategoryId], references: [id])
+
+  @@index([name])
+  @@index([majorCategoryId], map: "SubCategory_majorCategoryId_fkey")
+}
+
+model Producto {
+  id                  Int                       @id @default(autoincrement())
+  nombre              String
+  keystring           String
+  artiId              Int                       @unique
+  majorCategoryId     Int
+  subCategoryId       Int
+  createdAt           DateTime                  @default(now())
+  updatedAt           DateTime                  @updatedAt
+  monthlyObservations MonthlyPriceObservation[]
+  majorCategory       MajorCategory             @relation(fields: [majorCategoryId], references: [id])
+  subCategory         SubCategory               @relation(fields: [subCategoryId], references: [id])
+  weeklyObservations  WeeklyPriceObservation[]
+
+  @@index([artiId])
+  @@index([nombre])
+  @@index([keystring])
+  @@index([majorCategoryId], map: "Producto_majorCategoryId_fkey")
+  @@index([subCategoryId], map: "Producto_subCategoryId_fkey")
+}
+
+model MonthlyPriceObservation {
+  id          Int      @id @default(autoincrement())
+  artiId      Int
+  fechaMesIni DateTime
+  fuenId      Int
+  maximoKg    Float
+  minimoKg    Float
+  promedioKg  Float
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  producto    Producto @relation(fields: [artiId], references: [artiId])
+  mercado     Mercado  @relation(fields: [fuenId], references: [fuenId])
+
+  @@unique([artiId, fuenId, fechaMesIni])
+  @@index([fechaMesIni])
+  @@index([fuenId], map: "MonthlyPriceObservation_fuenId_fkey")
+}
+
+model WeeklyPriceObservation {
+  id         Int      @id @default(autoincrement())
+  artiId     Int
+  fechaIni   DateTime
+  fuenId     Int
+  maximoKg   Float
+  minimoKg   Float
+  promedioKg Float
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  producto   Producto @relation(fields: [artiId], references: [artiId])
+  mercado    Mercado  @relation(fields: [fuenId], references: [fuenId])
+
+  @@unique([artiId, fuenId, fechaIni])
+  @@index([fechaIni])
+  @@index([fuenId], map: "WeeklyPriceObservation_fuenId_fkey")
+}
