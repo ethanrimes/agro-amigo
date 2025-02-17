@@ -24,7 +24,7 @@ interface CategoryData {
   [key: string]: SuggestionData;
 }
 
-// Updated suggestions with IDs and types
+// Updated suggestions with more data
 const ALL_SUGGESTIONS: Record<CategoryType | string, CategoryData> = {
   'Producto': {
     'Verduras': {
@@ -33,7 +33,12 @@ const ALL_SUGGESTIONS: Record<CategoryType | string, CategoryData> = {
         { id: 1, name: 'Tomate Cherry', type: 'Producto', category: 'Verduras' },
         { id: 2, name: 'Cebolla', type: 'Producto', category: 'Verduras' },
         { id: 3, name: 'Lechuga', type: 'Producto', category: 'Verduras' },
-        // ... other items
+        { id: 4, name: 'Zanahoria', type: 'Producto', category: 'Verduras' },
+        { id: 5, name: 'Pimiento', type: 'Producto', category: 'Verduras' },
+        { id: 6, name: 'Pepino', type: 'Producto', category: 'Verduras' },
+        { id: 7, name: 'Brócoli', type: 'Producto', category: 'Verduras' },
+        { id: 8, name: 'Coliflor', type: 'Producto', category: 'Verduras' },
+        { id: 9, name: 'Espinaca', type: 'Producto', category: 'Verduras' }
       ]
     },
     'Frutas': {
@@ -41,12 +46,53 @@ const ALL_SUGGESTIONS: Record<CategoryType | string, CategoryData> = {
       items: [
         { id: 10, name: 'Aguacate', type: 'Producto', category: 'Frutas' },
         { id: 11, name: 'Mango', type: 'Producto', category: 'Frutas' },
-        // ... other items
+        { id: 12, name: 'Plátano', type: 'Producto', category: 'Frutas' },
+        { id: 13, name: 'Naranja', type: 'Producto', category: 'Frutas' },
+        { id: 14, name: 'Manzana', type: 'Producto', category: 'Frutas' },
+        { id: 15, name: 'Pera', type: 'Producto', category: 'Frutas' },
+        { id: 16, name: 'Piña', type: 'Producto', category: 'Frutas' },
+        { id: 17, name: 'Sandía', type: 'Producto', category: 'Frutas' },
+        { id: 18, name: 'Uvas', type: 'Producto', category: 'Frutas' }
       ]
     },
-    // ... other categories
+    'Granos': {
+      icon: 'basket-outline',
+      items: [
+        { id: 19, name: 'Arroz', type: 'Producto', category: 'Granos' },
+        { id: 20, name: 'Frijoles', type: 'Producto', category: 'Granos' },
+        { id: 21, name: 'Maíz', type: 'Producto', category: 'Granos' },
+        { id: 22, name: 'Lentejas', type: 'Producto', category: 'Granos' },
+        { id: 23, name: 'Quinoa', type: 'Producto', category: 'Granos' }
+      ]
+    }
   },
-  // ... other types
+  'Insumo': {
+    'Fertilizantes': {
+      icon: 'flask-outline',
+      items: [
+        { id: 24, name: 'Urea', type: 'Insumo', category: 'Fertilizantes' },
+        { id: 25, name: 'NPK', type: 'Insumo', category: 'Fertilizantes' },
+        { id: 26, name: 'Nitrato de Potasio', type: 'Insumo', category: 'Fertilizantes' }
+      ]
+    },
+    'Pesticidas': {
+      icon: 'water-outline',
+      items: [
+        { id: 27, name: 'Insecticida Natural', type: 'Insumo', category: 'Pesticidas' },
+        { id: 28, name: 'Fungicida Orgánico', type: 'Insumo', category: 'Pesticidas' }
+      ]
+    }
+  },
+  'Mercado': {
+    'Mercados Mayoristas': {
+      icon: 'business-outline',
+      items: [
+        { id: 29, name: 'Mercado Central', type: 'Mercado', category: 'Mercados Mayoristas' },
+        { id: 30, name: 'Terminal Agropecuario', type: 'Mercado', category: 'Mercados Mayoristas' },
+        { id: 31, name: 'Mercado Regional', type: 'Mercado', category: 'Mercados Mayoristas' }
+      ]
+    }
+  }
 };
 
 interface SearchDropdownProps {
@@ -77,8 +123,6 @@ export const SearchDropdown: React.FC<SearchDropdownProps> = ({
   };
 
   const getFilteredSuggestions = () => {
-    if (!query) return {} as CategoryData;
-
     const filtered: CategoryData = {};
     const typesToSearch = typeFilter 
       ? [typeFilter] 
@@ -89,9 +133,12 @@ export const SearchDropdown: React.FC<SearchDropdownProps> = ({
       if (!typeData) return;
 
       Object.entries(typeData).forEach(([category, data]) => {
-        const filteredItems = data.items.filter(item =>
-          item.name.toLowerCase().includes(query.toLowerCase())
-        );
+        const filteredItems = query
+          ? data.items.filter(item =>
+              item.name.toLowerCase().includes(query.toLowerCase())
+            )
+          : data.items;
+
         if (filteredItems.length > 0) {
           filtered[category] = {
             icon: data.icon,
@@ -105,10 +152,6 @@ export const SearchDropdown: React.FC<SearchDropdownProps> = ({
   };
 
   const filteredSuggestions = getFilteredSuggestions();
-
-  if (Object.keys(filteredSuggestions).length === 0) {
-    return null;
-  }
 
   return (
     <ScrollView
@@ -128,9 +171,7 @@ export const SearchDropdown: React.FC<SearchDropdownProps> = ({
             <TouchableOpacity
               key={`${category}-${item.id}`}
               style={styles.suggestionItem}
-              onPress={() => {
-                handleItemSelect(item);
-              }}
+              onPress={() => handleItemSelect(item)}
               activeOpacity={0.7}
             >
               <Text style={[styles.suggestionText, { color: currentTheme.text }]}>

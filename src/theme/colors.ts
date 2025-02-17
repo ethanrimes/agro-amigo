@@ -1,26 +1,28 @@
-import { Theme } from '../types/theme';
+import { Theme } from "../types/theme";
 
 export const theme: Theme = {
   light: {
-    primary: '#15803d',    // green-700
-    secondary: '#16a34a',  // green-600
-    accent: '#92400e',     // amber-800
-    background: '#fefce8',  // amber-50
-    card: '#ffffff',       // white
-    text: '#1f2937',       // gray-800
-    textSecondary: '#4b5563', // gray-600
-    textTertiary: '#6b7280',  // gray-500
-    border: '#166534'      // green-800
+    primary: '#2d4c2d',    // dark green for headers
+    secondary: '#e7f4e4',  // light green background
+    accent: '#1a2e19',     // darker green for emphasis
+    background: '#e7f4e4', // light green background
+    searchBackground: '#2d4c2d', // dark green for search
+    card: '#ffffff',       // white for cards
+    text: '#1a2e19',       // dark green text
+    textSecondary: '#2d4c2d', // medium green text
+    textTertiary: '#4a7c4a',  // lighter green text
+    border: '#a3c9a3'      // light green borders
   },
   dark: {
-    primary: '#14532d',    // green-900
-    secondary: '#166534',  // green-800
-    accent: '#78350f',     // amber-900
-    background: '#111827', // gray-900
-    card: '#1f2937',      // gray-800
-    text: '#e5e7eb',      // gray-200
-    textSecondary: '#9ca3af', // gray-400
-    textTertiary: '#6b7280',  // gray-500
-    border: '#15803d'      // green-700
+    primary: '#854d0e',    // amber-800: maintain brand consistency
+    secondary: '#27180c',  // custom dark brown
+    accent: '#84cc16',     // lime-500: fresh accent against earthy tones
+    background: '#1c1917', // stone-900: warm dark background
+    searchBackground: '#854d0e', // amber-800: matches primary
+    card: '#292524',       // stone-800: slightly lighter warm background
+    text: '#fef3c7',       // amber-100: warm light text
+    textSecondary: '#fde68a', // amber-200: slightly darker text
+    textTertiary: '#fcd34d',  // amber-300: tertiary text
+    border: '#92400e'      // amber-900: rich borders in dark mode
   }
 };

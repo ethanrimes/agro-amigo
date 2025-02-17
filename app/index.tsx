@@ -1,51 +1,101 @@
 import React, { useState } from 'react';
-import { View, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
-import { ThemeProvider } from '../src/context/ThemeContext';
-import { ThemeToggle } from '../src/components/LandingPage/ThemeToggle';
-import { Header } from '../src/components/LandingPage/Header';
+import { View, SafeAreaView, ScrollView, StyleSheet, Text } from 'react-native';
+import { Feather } from '@expo/vector-icons';
 import { WatchedPricesSection } from '../src/components/LandingPage/WatchedPricesSection';
-import { PriceCarousel } from '../src/components/LandingPage/PriceCarousel';
-import { InsightCard } from '../src/components/LandingPage/InsightCard';
-import { BottomNav } from '../src/components/BottomNav';
-import { useTheme } from '../src/context/ThemeContext';
+import { CategoryContainer } from '../src/components/LandingPage/CategoryContainer';
+import { CategoryType } from '../src/types/latestData';
+import { useTheme } from '../hooks/useTheme';
+import { spacing } from '../src/theme/spacing';
+import { SearchHeader } from '../src/components/LandingPage/SearchHeader';
 
 const AppContent: React.FC = () => {
-  const { currentTheme } = useTheme();
-  
-  // Sample data for watched prices - you'll want to replace this with real data
-  const watchedPrices = [
-    { id: '1',
-      product: "Tomate Cherry",
-      icon: "box",
-      priceRange: { min: 2000, max: 2500 },
-      trend: "up" as const,
-      market: "Plaza de Mercado",
-      timestamp: new Date(),
+  const { colors, spacing } = useTheme();
+  const [selectedType, setSelectedType] = useState<CategoryType>('Producto');
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // Sample data for categories
+  const categories = [
+    {
+      category: 'Verduras',
+      icon: '/path/to/icon',
+      items: [
+        {
+          id: '1',
+          name: 'Tomate',
+          icon: '/path/to/tomato',
+          priceRange: { min: 2.30, max: 2.70 },
+          trend: 'up' as const,
+          market: 'Mercado Central',
+          timestamp: new Date(),
+        },
+        {
+          id: '2',
+          name: 'Cebolla',
+          icon: '/path/to/onion',
+          priceRange: { min: 1.45, max: 2.05 },
+          trend: 'down' as const,
+          market: 'Mercado Central',
+          timestamp: new Date(),
+        },
+        {
+          id: '3',
+          name: 'Pimiento',
+          icon: '/path/to/pepper',
+          priceRange: { min: 3.10, max: 3.50 },
+          trend: 'up' as const,
+          market: 'Mercado Central',
+          timestamp: new Date(),
+        },
+        {
+          id: '4',
+          name: 'Zanahoria',
+          icon: '/path/to/carrot',
+          priceRange: { min: 1.90, max: 2.30 },
+          trend: 'stable' as const,
+          market: 'Mercado Central',
+          timestamp: new Date(),
+        },
+      ],
+      totalItems: 12
     },
-    // Add more sample data as needed
+    // Add more categories as needed
   ];
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={[styles.container, { backgroundColor: currentTheme.background }]}>
-        <ThemeToggle />
-        <View style={styles.headerContainer}>
-          <Header />
+      <View style={[styles.container, { backgroundColor: colors.background }]}>
+        {/* Top Bar */}
+        <View style={[styles.topBar, { backgroundColor: colors.accent }]}>
+          <Text style={[styles.brandName, { color: colors.card }]}>Finkra</Text>
         </View>
+
+        {/* Watched Prices Section */}
+        <WatchedPricesSection />
+
+        {/* Search Header */}
+        <SearchHeader
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          selectedType={selectedType}
+          onTypeSelect={setSelectedType}
+        />
+
         <ScrollView 
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
         >
-          <WatchedPricesSection 
-            watchedPrices={watchedPrices}
-            onAddWatchedPrice={() => {
-              console.log('Add watched price clicked');
-            }}
-          />
-          <PriceCarousel />
-          <InsightCard />
-          {/* Add padding at bottom to account for BottomNav */}
+          {/* Category Containers */}
+          {categories.map((category, index) => (
+            <CategoryContainer
+              key={index}
+              {...category}
+              onViewAll={() => {
+                // Handle view all action
+                console.log(`View all for ${category.category}`);
+              }}
+            />
+          ))}
           <View style={styles.bottomPadding} />
         </ScrollView>
       </View>
@@ -60,25 +110,29 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  topBar: {
+    height: 40,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: spacing.md,
+  },
+  brandName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
   scrollView: {
     flex: 1,
   },
   scrollContent: {
-    flexGrow: 1,
+    padding: spacing.md,
   },
   bottomPadding: {
-    height: 80, // Adjust this value based on your BottomNav height
-  },
-  headerContainer: {
-    zIndex: 1000, // Add this to ensure header and dropdown are above other elements
-    elevation: 1000, // For Android
+    height: 80,
   },
 });
 
 export default function App() {
   return (
-    <ThemeProvider>
-      <AppContent />
-    </ThemeProvider>
+    <AppContent />
   );
 }

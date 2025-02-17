@@ -9,7 +9,6 @@ import { useRouter } from 'expo-router';
 export interface PriceCardProps {
   id: string;
   product: string;
-  icon: string;
   priceRange: {
     min: number;
     max: number;
@@ -22,7 +21,6 @@ export interface PriceCardProps {
 export const PriceCard: React.FC<PriceCardProps> = ({
   id,
   product,
-  icon,
   priceRange,
   trend,
   market,
@@ -55,10 +53,7 @@ export const PriceCard: React.FC<PriceCardProps> = ({
       onPress={handlePress}
       style={[styles.card, { backgroundColor: currentTheme.card }]}
     >
-      <View style={styles.header}>
-        <Feather name={icon as any} size={24} color={currentTheme.accent} />
-        <Text style={[styles.product, { color: currentTheme.text }]}>{product}</Text>
-      </View>
+      <Text style={[styles.product, { color: currentTheme.text }]}>{product}</Text>
       <Text style={[styles.priceRange, { color: currentTheme.text }]}>
         {formatPrice(priceRange.min)} - {formatPrice(priceRange.max)}
       </Text>
@@ -78,29 +73,28 @@ export const PriceCard: React.FC<PriceCardProps> = ({
 
 const styles = StyleSheet.create({
   card: {
-    padding: spacing.md,
+    padding: spacing.sm,
     borderRadius: 12,
     margin: spacing.xs,
     width: 160,
-    elevation: 2,
+    backgroundColor: '#FFFFFF',
+    elevation: 1,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: spacing.sm,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    borderWidth: 1,
+    borderColor: '#E5E5E5',
   },
   product: {
-    ...typography.body,
-    marginLeft: spacing.sm,
-    fontWeight: '500',
+    ...typography.small,
+    fontWeight: '600',
+    marginBottom: spacing.xs,
   },
   priceRange: {
-    ...typography.h3,
+    ...typography.body,
     marginBottom: spacing.xs,
+    fontWeight: '500',
   },
   footer: {
     flexDirection: 'row',
@@ -109,6 +103,6 @@ const styles = StyleSheet.create({
   marketInfo: {
     ...typography.tiny,
     marginLeft: spacing.xs,
-    opacity: 0.7,
+    opacity: 0.6,
   },
 });

@@ -8,6 +8,7 @@ export interface ThemeColors {
     textSecondary: string;
     textTertiary: string;
     border: string;
+    searchBackground: string;
   }
   
   export interface Theme {
